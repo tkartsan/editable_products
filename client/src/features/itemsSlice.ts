@@ -11,7 +11,7 @@ interface ItemsState {
 }
 
 const initialState: ItemsState = {
-  items: [],
+  items: [], 
 };
 
 const itemsSlice = createSlice({
@@ -19,7 +19,7 @@ const itemsSlice = createSlice({
   initialState,
   reducers: {
     setItems: (state, action: PayloadAction<Item[]>) => {
-      state.items = action.payload;
+      state.items = action.payload; 
     },
     addItem: (state, action: PayloadAction<Item>) => {
       state.items.push(action.payload);
