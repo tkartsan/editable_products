@@ -16,9 +16,10 @@ interface Item {
 const App: React.FC = () => {
   const { useFetchItemsQuery } = useFetchItems();
   const { data: items = [], isLoading, isError } = useFetchItemsQuery();
-  const addItem = useAddItem();
-  const updateItem = useUpdateItem();
-  const deleteItem = useDeleteItem();
+
+  const addItemMutation = useAddItem();
+  const updateItemMutation = useUpdateItem();
+  const deleteItemMutation = useDeleteItem();
 
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -27,10 +28,10 @@ const App: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingId) {
-      updateItem.mutate({ id: editingId, name, price: parseFloat(price) });
+      updateItemMutation.mutate({ id: editingId, name, price: parseFloat(price) });
       setEditingId(null);
     } else {
-      addItem.mutate({ name, price: parseFloat(price) });
+      addItemMutation.mutate({ name, price: parseFloat(price) });
     }
     setName('');
     setPrice('');
@@ -43,7 +44,7 @@ const App: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    deleteItem.mutate(id);
+    deleteItemMutation.mutate(id);
   };
 
   if (isLoading) return <p className="loading">Loading...</p>;
