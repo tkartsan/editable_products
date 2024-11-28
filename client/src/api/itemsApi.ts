@@ -21,7 +21,7 @@ export const useFetchItems = () => {
         throw new Error('Failed to fetch items');
       }
       const data = await response.json();
-      dispatch(setItems(data.data)); 
+      dispatch(setItems(data.data)); // Sync with Redux
       return data.data;
     },
     staleTime: 300000, 
@@ -32,12 +32,8 @@ export const useAddItem = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
-  return useMutation<
-    Item, 
-    Error, 
-    { name: string; price: number } 
-  >({
-    mutationFn: async (newItem) => {
+  return useMutation({
+    mutationFn: async (newItem: { name: string; price: number }): Promise<Item> => {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,8 +46,8 @@ export const useAddItem = () => {
       return data.data;
     },
     onSuccess: (newItem) => {
-      queryClient.invalidateQueries({ queryKey: ['items'] }); 
-      dispatch(addItem(newItem)); 
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+      dispatch(addItem(newItem)); // Sync with Redux
     },
   });
 };
@@ -60,12 +56,9 @@ export const useUpdateItem = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
-  return useMutation<
-    Item, 
-    Error, 
-    { id: string; name: string; price: number }
-  >({
-    mutationFn: async ({ id, name, price }) => {
+  return useMutation({
+    mutationFn: async (updateData: { id: string; name: string; price: number }): Promise<Item> => {
+      const { id, name, price } = updateData;
       const response = await fetch(`${API_URL}?id=${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -79,7 +72,7 @@ export const useUpdateItem = () => {
     },
     onSuccess: (updatedItem) => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
-      dispatch(updateItem(updatedItem)); 
+      dispatch(updateItem(updatedItem)); // Sync with Redux
     },
   });
 };
@@ -88,12 +81,8 @@ export const useDeleteItem = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
-  return useMutation<
-    string, 
-    Error, 
-    string 
-  >({
-    mutationFn: async (id) => {
+  return useMutation({
+    mutationFn: async (id: string): Promise<string> => {
       const response = await fetch(`${API_URL}?id=${id}`, { method: 'DELETE' });
       if (!response.ok) {
         throw new Error('Failed to delete item');
@@ -102,7 +91,7 @@ export const useDeleteItem = () => {
     },
     onSuccess: (id) => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
-      dispatch(deleteItem(id)); 
+      dispatch(deleteItem(id)); // Sync with Redux
     },
   });
 };

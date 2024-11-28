@@ -50,7 +50,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app-container">
-      <h1>Object Management</h1>
+      <h1 className="title">Object Management</h1>
       <form className="form" onSubmit={handleSubmit}>
         <input
           className="input"
@@ -77,17 +77,17 @@ const App: React.FC = () => {
         <table className="items-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Actions</th>
+              <th className="table-header">Name</th>
+              <th className="table-header">Price</th>
+              <th className="table-header">Actions</th>
             </tr>
           </thead>
           <tbody>
             {items.map((item: Item) => (
-              <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>${item.price.toFixed(2)}</td>
-                <td className="action-buttons">
+              <tr key={item.id} className="table-row">
+                <td className="table-cell">{item.name}</td>
+                <td className="table-cell">${item.price.toFixed(2)}</td>
+                <td className="table-cell action-buttons">
                   <button
                     className="edit-button"
                     onClick={() => handleEdit(item.id, item.name, item.price)}

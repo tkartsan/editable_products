@@ -6,32 +6,26 @@ interface Item {
   price: number;
 }
 
-interface ItemsState {
-  items: Item[];
-}
-
-const initialState: ItemsState = {
-  items: [], 
-};
+const initialState: { items: Item[] } = { items: [] };
 
 const itemsSlice = createSlice({
   name: 'items',
   initialState,
   reducers: {
     setItems: (state, action: PayloadAction<Item[]>) => {
-      state.items = action.payload; 
+      state.items = action.payload;
     },
     addItem: (state, action: PayloadAction<Item>) => {
       state.items.push(action.payload);
     },
     updateItem: (state, action: PayloadAction<Item>) => {
-      const index = state.items.findIndex((item) => item.id === action.payload.id);
+      const index = state.items.findIndex((i) => i.id === action.payload.id);
       if (index !== -1) {
         state.items[index] = action.payload;
       }
     },
     deleteItem: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
+      state.items = state.items.filter((i) => i.id !== action.payload);
     },
   },
 });
