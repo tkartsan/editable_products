@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { setItems, addItem, updateItem, deleteItem } from '../features/itemsSlice';
 
@@ -13,23 +13,24 @@ interface Item {
 export const useFetchItems = () => {
   const dispatch = useDispatch();
 
-  return useQuery<Item[], Error>({
+  const useFetchItemsQuery = () => useQuery<Item[]>({
     queryKey: ['items'], 
     queryFn: async () => {
       const response = await fetch(API_URL);
       if (!response.ok) {
         throw new Error('Failed to fetch items');
       }
-      const data = await response.json();
-      dispatch(setItems(data.data)); // Sync with Redux
-      return data.data;
-    },
-    staleTime: 300000, 
+      const {data} = await response.json();
+      dispatch(setItems(data)); 
+
+      return data;
+    }
   });
+
+  return {useFetchItemsQuery}
 };
 
 export const useAddItem = () => {
-  const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
   return useMutation({
@@ -46,14 +47,12 @@ export const useAddItem = () => {
       return data.data;
     },
     onSuccess: (newItem) => {
-      queryClient.invalidateQueries({ queryKey: ['items'] });
       dispatch(addItem(newItem)); // Sync with Redux
     },
   });
 };
 
 export const useUpdateItem = () => {
-  const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
   return useMutation({
@@ -71,14 +70,12 @@ export const useUpdateItem = () => {
       return data.data[0];
     },
     onSuccess: (updatedItem) => {
-      queryClient.invalidateQueries({ queryKey: ['items'] });
       dispatch(updateItem(updatedItem)); // Sync with Redux
     },
   });
 };
 
 export const useDeleteItem = () => {
-  const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
   return useMutation({
@@ -90,7 +87,6 @@ export const useDeleteItem = () => {
       return id;
     },
     onSuccess: (id) => {
-      queryClient.invalidateQueries({ queryKey: ['items'] });
       dispatch(deleteItem(id)); // Sync with Redux
     },
   });

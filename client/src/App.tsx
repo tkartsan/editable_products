@@ -14,7 +14,8 @@ interface Item {
 }
 
 const App: React.FC = () => {
-  const { data: items = [], isLoading, isError } = useFetchItems();
+  const { useFetchItemsQuery } = useFetchItems();
+  const { data: items = [], isLoading, isError } = useFetchItemsQuery();
   const addItem = useAddItem();
   const updateItem = useUpdateItem();
   const deleteItem = useDeleteItem();
