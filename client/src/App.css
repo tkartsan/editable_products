@@ -125,3 +125,14 @@ button:hover {
 .items-table td {
   word-break: break-word;
 }
+
+.global-objects-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-wrapper {
+  display: flex;
+  gap: 15px;
+}

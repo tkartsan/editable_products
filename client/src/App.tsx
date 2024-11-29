@@ -24,6 +24,9 @@ const App: React.FC = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [minPrice, setMinPrice] = useState<string>('');
+  const [maxPrice, setMaxPrice] = useState<string>('');
+  const [filteredItems, setFilteredItems] = useState<Item[]>(items);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +48,25 @@ const App: React.FC = () => {
 
   const handleDelete = (id: string) => {
     deleteItemMutation.mutate(id);
+  };
+
+  const applyFilter = () => {
+    const filtered = items.filter((item) => {
+      const itemPrice = item.price;
+      const min = minPrice ? parseFloat(minPrice) : null;
+      const max = maxPrice ? parseFloat(maxPrice) : null;
+
+      if (min !== null && itemPrice < min) return false;
+      if (max !== null && itemPrice > max) return false;
+      return true;
+    });
+    setFilteredItems(filtered);
+  };
+
+  const clearFilter = () => {
+    setMinPrice('');
+    setMaxPrice('');
+    setFilteredItems(items);
   };
 
   if (isLoading) return <p className="loading">Loading...</p>;
@@ -75,7 +97,27 @@ const App: React.FC = () => {
         </button>
       </form>
       <div className="items-container">
-        <h2 className="items-title">Items</h2>
+        <div className="global-objects-wrapper">
+          <h2 className="items-title">Items</h2>
+          <div className="filter-wrapper">
+            <input
+              className="input"
+              type="number"
+              placeholder="Min Price"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+            />
+            <input
+              className="input"
+              type="number"
+              placeholder="Max Price"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+            />
+            <button className="filter-button" onClick={applyFilter}>Apply Filter</button>
+            <button className="filter-button" onClick={clearFilter}>Clear Filter</button>
+          </div>
+        </div>
         <table className="items-table">
           <thead>
             <tr>
@@ -85,7 +127,7 @@ const App: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {items.map((item: Item) => (
+            {filteredItems.map((item: Item) => (
               <tr key={item.id} className="table-row">
                 <td className="table-cell">{item.name}</td>
                 <td className="table-cell">${item.price.toFixed(2)}</td>
